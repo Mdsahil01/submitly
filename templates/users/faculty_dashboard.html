@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Faculty Dashboard — Submitly{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 0.25rem;
+    }
+
+    .dashboard-subtitle {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+    }
+
+    .card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: var(--text-main);
+    }
+
+    .card-body {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+    }
+
+    .empty-state {
+        padding: 1.5rem;
+        background-color: #f8fafc;
+        border: 1px dashed var(--border-color);
+        border-radius: 0.375rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Faculty Dashboard</h1>
+    <p class="dashboard-subtitle">Welcome back, {{ user.full_name }} ({{ user.email }})</p>
+</div>
+
+<div class="dashboard-grid">
+    <div class="card" id="faculty-assignments-card">
+        <h2 class="card-title">Managed Assignments</h2>
+        <div class="card-body">
+            <div class="empty-state">
+                No assignments created yet.
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="faculty-reviews-card">
+        <h2 class="card-title">Pending Submissions for Review</h2>
+        <div class="card-body">
+            <div class="empty-state">
+                No submissions waiting for evaluation.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
