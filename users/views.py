@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
+from assignments.models import Assignment
 
 from .decorators import faculty_required, student_required
 
@@ -67,7 +68,24 @@ def student_dashboard_view(request):
     """
     Student dashboard view.
     """
-    return render(request, 'users/student_dashboard.html', {'user': request.user})
+    assignments = (
+        Assignment.objects
+        .filter(
+            course__enrollments__student=request.user,
+            is_published=True,
+        )
+        .select_related("course")
+        .order_by("due_date")
+    )
+
+    return render(
+        request,
+        "users/student_dashboard.html",
+        {
+            "user": request.user,
+            "assignments": assignments,
+        },
+    )
 
 
 @faculty_required
@@ -75,4 +93,18 @@ def faculty_dashboard_view(request):
     """
     Faculty dashboard view.
     """
-    return render(request, 'users/faculty_dashboard.html', {'user': request.user})
+    assignments = (
+         Assignment.objects
+        .filter(created_by=request.user)
+        .select_related('course')
+        .order_by('-created_at')
+    )
+
+    return render(
+        request,
+        'users/faculty_dashboard.html',
+        {
+            'user': request.user,
+            'assignments': assignments,
+        },
+    )

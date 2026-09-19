@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Create Assignment</h1>
+
+    <p>
+        Course: <strong>{{ course.code }} - {{ course.name }}</strong>
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Create Assignment
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -69,7 +69,40 @@
         <h2 class="card-title">Managed Assignments</h2>
         <div class="card-body">
             <div class="empty-state">
-                No assignments created yet.
+                {% if assignments %}
+    <div class="assignment-list">
+        {% for assignment in assignments %}
+            <div class="assignment-card">
+                <h3>{{ assignment.title }}</h3>
+
+                <p>
+                    <strong>Course:</strong>
+                    {{ assignment.course.code }} - {{ assignment.course.name }}
+                </p>
+
+                <p>
+                    <strong>Due:</strong>
+                    {{ assignment.due_date|date:"d M Y, h:i A" }}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    {% if assignment.is_published %}
+                        Published
+                    {% else %}
+                        Draft
+                    {% endif %}
+                </p>
+
+                <p>{{ assignment.description }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p>No assignments created yet.</p>
+    </div>
+{% endif %}
             </div>
         </div>
     </div>

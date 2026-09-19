@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'courses.apps.CoursesConfig',
+    'assignments.apps.AssignmentsConfig',
 ]
 
 MIDDLEWARE = [

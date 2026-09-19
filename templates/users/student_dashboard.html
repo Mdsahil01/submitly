@@ -55,32 +55,91 @@
         color: var(--text-muted);
         font-size: 0.875rem;
     }
+
+    .assignment-item {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 0.375rem;
+    }
+
+    .assignment-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .assignment-item h3 {
+        color: var(--text-main);
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .assignment-item p {
+        margin-bottom: 0.4rem;
+    }
+
+    .assignment-item a {
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-weight: 600;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="dashboard-header">
     <h1 class="dashboard-title">Student Dashboard</h1>
-    <p class="dashboard-subtitle">Welcome back, {{ user.full_name }} ({{ user.email }})</p>
+    <p class="dashboard-subtitle">
+        Welcome back, {{ user.full_name }} ({{ user.email }})
+    </p>
 </div>
 
 <div class="dashboard-grid">
+
+    <!-- Available Assignments -->
     <div class="card" id="student-assignments-card">
         <h2 class="card-title">Available Assignments</h2>
+
         <div class="card-body">
-            <div class="empty-state">
-                No active assignments available at this moment.
-            </div>
+            {% if assignments %}
+                {% for assignment in assignments %}
+                    <div class="assignment-item">
+                        <h3>{{ assignment.title }}</h3>
+
+                        <p>
+                            <strong>Course:</strong>
+                            {{ assignment.course.code }} -
+                            {{ assignment.course.name }}
+                        </p>
+
+                        <p>
+                            <strong>Due:</strong>
+                            {{ assignment.due_date|date:"d M Y, h:i A" }}
+                        </p>
+
+                        <a href="{% url 'assignments:student_assignments' %}">
+                            View Assignment
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    No active assignments available at this moment.
+                </div>
+            {% endif %}
         </div>
     </div>
 
+    <!-- Recent Submissions -->
     <div class="card" id="student-submissions-card">
         <h2 class="card-title">My Recent Submissions</h2>
+
         <div class="card-body">
             <div class="empty-state">
                 You have not submitted any assignments yet.
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}

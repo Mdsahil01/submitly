@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>My Assignments</h1>
+
+    {% if assignments %}
+        {% for assignment in assignments %}
+            <div class="assignment-card">
+                <h2>{{ assignment.title }}</h2>
+
+                <p>
+                    <strong>Course:</strong>
+                    {{ assignment.course.code }} - {{ assignment.course.name }}
+                </p>
+
+                <p>
+                    <strong>Due:</strong>
+                    {{ assignment.due_date|date:"d M Y, h:i A" }}
+                </p>
+
+                <p>{{ assignment.description }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No assignments available.</p>
+    {% endif %}
+</div>
+{% endblock %}
