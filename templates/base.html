@@ -845,5 +845,38 @@
 
 </div>
 
+    {% else %}
+
+        <!-- =================================================
+             UNAUTHENTICATED VIEW
+        ================================================== -->
+
+        <main class="page-content" style="margin-left: 0;">
+
+            {% if messages %}
+
+                <ul class="messages">
+
+                    {% for message in messages %}
+
+                        <li class="message {{ message.tags }}">
+                            {{ message }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% endif %}
+
+
+            {% block content %}{% endblock %}
+
+        </main>
+
+    {% endif %}
+
+</div>
+
 </body>
 </html>
