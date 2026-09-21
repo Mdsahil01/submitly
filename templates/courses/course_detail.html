@@ -1,0 +1,64 @@
+ {% extends "base.html" %}
+
+{% block title %}{{ course.name }} - Submitly{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ course.name }}</h1>
+    <p>{{ course.code }}</p>
+</div>
+
+{% if course.description %}
+    <p>{{ course.description }}</p>
+{% endif %}
+
+<p>
+    <strong>Faculty:</strong>
+    {{ course.faculty.full_name }}
+</p>
+
+{% if user.is_faculty %}
+    <h2>Enrolled Students</h2>
+
+    {% if enrollments %}
+        <ul>
+            {% for enrollment in enrollments %}
+                <li>{{ enrollment.student.full_name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No students are enrolled in this course.</p>
+    {% endif %}
+
+    <p>
+        <a href="{% url 'assignments:create_assignment' course.id %}">
+            Create Assignment
+        </a>
+    </p>
+{% endif %}
+
+<h2>Assignments</h2>
+
+{% if assignments %}
+    {% for assignment in assignments %}
+        <div>
+            <h3>{{ assignment.title }}</h3>
+            <p>{{ assignment.description }}</p>
+
+            {% if user.is_student and assignment.is_published %}
+                <a href="{% url 'assignments:assignment_detail' assignment.id %}">
+                    View Assignment
+                </a>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No assignments available.</p>
+{% endif %}
+
+<p>
+    <a href="{% url 'courses:course_list' %}">
+        Back to Courses
+    </a>
+</p>
+{% endblock %}

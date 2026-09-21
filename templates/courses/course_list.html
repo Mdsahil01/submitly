@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Courses - Submitly{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Courses</h1>
+    <p>View and manage your courses.</p>
+</div>
+
+{% if user.is_faculty %}
+    <a href="{% url 'courses:course_create' %}">Create Course</a>
+{% endif %}
+
+{% if courses %}
+    {% for course in courses %}
+        <div>
+            <h2>{{ course.name }}</h2>
+            <p><strong>Code:</strong> {{ course.code }}</p>
+
+            {% if course.description %}
+                <p>{{ course.description }}</p>
+            {% endif %}
+
+            <a href="{% url 'courses:course_detail' course.id %}">
+                View Course
+            </a>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No courses found.</p>
+{% endif %}
+{% endblock %}
