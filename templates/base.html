@@ -819,31 +819,30 @@
             </header>
 
 
-    <main class="page-content">
+            <main class="page-content">
 
-        {% if messages %}
+                {% if messages %}
 
-            <ul class="messages">
+                    <ul class="messages">
 
-                {% for message in messages %}
+                        {% for message in messages %}
 
-                    <li class="message {{ message.tags }}">
-                        {{ message }}
-                    </li>
+                            <li class="message {{ message.tags }}">
+                                {{ message }}
+                            </li>
 
-                {% endfor %}
+                        {% endfor %}
 
-            </ul>
+                    </ul>
 
-        {% endif %}
+                {% endif %}
+
+                {% block content %}{% endblock %}
+
+            </main>
 
 
-        {% block content %}{% endblock %}
-
-    </main>
-
-
-</div>
+        </div>
 
     {% else %}
 
@@ -868,7 +867,6 @@
                 </ul>
 
             {% endif %}
-
 
             {% block content %}{% endblock %}
 
