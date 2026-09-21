@@ -3,6 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 
 from courses.models import Course
+from submissions.models import Submission
 
 from .forms import AssignmentForm
 from .models import Assignment
@@ -42,6 +43,7 @@ def create_assignment(request, course_id):
         },
     )
 
+
 @login_required
 def student_assignments(request):
     if not request.user.is_student:
@@ -64,3 +66,30 @@ def student_assignments(request):
             "assignments": assignments,
         },
     )
+
+
+@login_required
+def assignment_detail(request, assignment_id):
+    if not request.user.is_student:
+        raise PermissionDenied
+
+    assignment = get_object_or_404(
+        Assignment,
+        id=assignment_id,
+        is_published=True,
+        course__enrollments__student=request.user,
+    )
+
+    submission = Submission.objects.filter(
+        assignment=assignment,
+        student=request.user,
+    ).first()
+
+    return render(
+        request,
+        "assignments/assignment_detail.html",
+        {
+            "assignment": assignment,
+            "submission": submission,
+        },
+    )  

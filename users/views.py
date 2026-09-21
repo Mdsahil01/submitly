@@ -6,6 +6,8 @@ from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 from assignments.models import Assignment
+from django.utils import timezone
+from submissions.models import Submission
 
 from .decorators import faculty_required, student_required
 
@@ -65,9 +67,6 @@ def dashboard_redirect_view(request):
 
 @student_required
 def student_dashboard_view(request):
-    """
-    Student dashboard view.
-    """
     assignments = (
         Assignment.objects
         .filter(
@@ -78,15 +77,33 @@ def student_dashboard_view(request):
         .order_by("due_date")
     )
 
+    submissions = (
+        Submission.objects
+        .filter(student=request.user)
+        .select_related("assignment", "assignment__course")
+        .order_by("-submitted_at")
+    )
+
+    submitted_assignment_ids = submissions.values_list(
+        "assignment_id",
+        flat=True,
+    )
+
+    current_assignments = assignments.filter(
+        due_date__gte=timezone.now()
+    ).exclude(
+        id__in=submitted_assignment_ids
+    )
+
     return render(
         request,
         "users/student_dashboard.html",
         {
             "user": request.user,
-            "assignments": assignments,
+            "current_assignments": current_assignments,
+            "submissions": submissions[:5],
         },
     )
-
 
 @faculty_required
 def faculty_dashboard_view(request):

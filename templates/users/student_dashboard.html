@@ -97,49 +97,75 @@
 <div class="dashboard-grid">
 
     <!-- Available Assignments -->
-    <div class="card" id="student-assignments-card">
-        <h2 class="card-title">Available Assignments</h2>
+    <div class="card" id="student-current-assignments-card">
+    <h2 class="card-title">Current Assignments</h2>
 
-        <div class="card-body">
-            {% if assignments %}
-                {% for assignment in assignments %}
-                    <div class="assignment-item">
-                        <h3>{{ assignment.title }}</h3>
+    <div class="card-body">
+        {% if current_assignments %}
+            {% for assignment in current_assignments %}
+                <div class="assignment-item">
+                    <h3>{{ assignment.title }}</h3>
 
-                        <p>
-                            <strong>Course:</strong>
-                            {{ assignment.course.code }} -
-                            {{ assignment.course.name }}
-                        </p>
+                    <p>
+                        <strong>Course:</strong>
+                        {{ assignment.course.code }} -
+                        {{ assignment.course.name }}
+                    </p>
 
-                        <p>
-                            <strong>Due:</strong>
-                            {{ assignment.due_date|date:"d M Y, h:i A" }}
-                        </p>
+                    <p>
+                        <strong>Due:</strong>
+                        {{ assignment.due_date|date:"d M Y, h:i A" }}
+                    </p>
 
-                        <a href="{% url 'assignments:student_assignments' %}">
-                            View Assignment
-                        </a>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-state">
-                    No active assignments available at this moment.
+                    <a href="{% url 'assignments:assignment_detail' assignment.id %}">
+                        Open Assignment
+                    </a>
                 </div>
-            {% endif %}
-        </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                You have no current assignments.
+            </div>
+        {% endif %}
     </div>
+</div>
 
     <!-- Recent Submissions -->
     <div class="card" id="student-submissions-card">
-        <h2 class="card-title">My Recent Submissions</h2>
+    <h2 class="card-title">Submitted Assignments</h2>
 
-        <div class="card-body">
+    <div class="card-body">
+        {% if submissions %}
+            {% for submission in submissions %}
+                <div class="assignment-item">
+                    <h3>{{ submission.assignment.title }}</h3>
+
+                    <p>
+                        <strong>Course:</strong>
+                        {{ submission.assignment.course.code }} -
+                        {{ submission.assignment.course.name }}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        {{ submission.get_status_display }}
+                    </p>
+
+                    <p>
+                        <strong>Submitted:</strong>
+                        {{ submission.submitted_at|date:"d M Y, h:i A" }}
+                    </p>
+
+                    <a href="{% url 'assignments:assignment_detail' submission.assignment.id %}">
+                        View Submission
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
             <div class="empty-state">
                 You have not submitted any assignments yet.
             </div>
-        </div>
+        {% endif %}
     </div>
-
 </div>
 {% endblock %}

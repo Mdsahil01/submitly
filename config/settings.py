@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'users',
     'courses.apps.CoursesConfig',
     'assignments.apps.AssignmentsConfig',
+    'submissions.apps.SubmissionsConfig',
 ]
 
 MIDDLEWARE = [

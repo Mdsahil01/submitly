@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Assignment — Submitly{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h1>Submit Assignment</h1>
+
+    <p>
+        <strong>Assignment:</strong>
+        {{ assignment.title }}
+    </p>
+
+    <p>
+        <strong>Course:</strong>
+        {{ assignment.course.code }} - {{ assignment.course.name }}
+    </p>
+
+    <p>
+        <strong>Due:</strong>
+        {{ assignment.due_date|date:"d M Y, h:i A" }}
+    </p>
+
+    <hr>
+
+    <h2>Your Work</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <div>
+            {{ form.content.label_tag }}
+            {{ form.content }}
+
+            {% for error in form.content.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.file.label_tag }}
+            {{ form.file }}
+            <p><small>Allowed file types: PDF, DOC, DOCX, PPT, PPTX, TXT (Max 10MB)</small></p>
+
+            {% for error in form.file.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <button type="submit">
+            Submit Assignment
+        </button>
+
+        <a href="{% url 'assignments:assignment_detail' assignment.id %}">
+            Cancel
+        </a>
+    </form>
+
+</div>
+{% endblock %}

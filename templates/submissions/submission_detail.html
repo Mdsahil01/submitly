@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Submission - {{ assignment.title }} — Submitly{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h1>Submission Details</h1>
+
+    <p>
+        <strong>Assignment:</strong>
+        {{ assignment.title }}
+    </p>
+
+    <p>
+        <strong>Course:</strong>
+        {{ assignment.course.code }} - {{ assignment.course.name }}
+    </p>
+
+    <p>
+        <strong>Due Date:</strong>
+        {{ assignment.due_date|date:"d M Y, h:i A" }}
+    </p>
+
+    <hr>
+
+    <h2>Your Submission</h2>
+
+    <p>
+        <strong>Status:</strong>
+        {{ submission.get_status_display }}
+    </p>
+
+    <p>
+        <strong>Submitted:</strong>
+        {{ submission.submitted_at|date:"d M Y, h:i A" }}
+    </p>
+
+    {% if submission.content %}
+        <h3>Text Content</h3>
+        <div style="white-space: pre-wrap; border: 1px solid #ccc; padding: 1rem; background: #f9f9f9;">{{ submission.content }}</div>
+    {% endif %}
+
+    {% if submission.file %}
+        <h3>Attached File</h3>
+        <p>
+            <strong>File Name:</strong>
+            {{ submission.file_name }}
+        </p>
+        <p>
+            <a href="{{ submission.file.url }}" download>Download Submission File</a>
+        </p>
+    {% endif %}
+
+    <hr>
+
+    <a href="{% url 'assignments:assignment_detail' assignment.id %}">Back to Assignment</a>
+
+</div>
+{% endblock %}

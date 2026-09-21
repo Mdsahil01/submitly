@@ -16,4 +16,9 @@ urlpatterns = [
         views.student_assignments,
         name="student_assignments",
     ),
+    path(
+        "<int:assignment_id>/",
+        views.assignment_detail,
+        name="assignment_detail",
+    ),
 ]

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ assignment.title }} — Submitly{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h1>{{ assignment.title }}</h1>
+
+    <p>
+        <strong>Course:</strong>
+        {{ assignment.course.code }} - {{ assignment.course.name }}
+    </p>
+
+    <p>
+        <strong>Due:</strong>
+        {{ assignment.due_date|date:"d M Y, h:i A" }}
+    </p>
+
+    <hr>
+
+    <h2>Instructions</h2>
+
+    <p>{{ assignment.description }}</p>
+
+    {% if submission %}
+        <hr>
+
+        <h2>Submission</h2>
+
+        <p>
+            <strong>Status:</strong>
+            {{ submission.get_status_display }}
+        </p>
+
+        <p>
+            <strong>Submitted:</strong>
+            {{ submission.submitted_at|date:"d M Y, h:i A" }}
+        </p>
+
+        <p>
+            <a href="{% url 'submissions:submission_detail' submission.id %}">
+                View Full Submission
+            </a>
+        </p>
+
+    {% else %}
+        <hr>
+
+        <a href="{% url 'submissions:create_submission' assignment.id %}">
+            Submit Assignment
+        </a>
+    {% endif %}
+
+</div>
+{% endblock %}

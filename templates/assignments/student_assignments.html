@@ -20,6 +20,10 @@
                 </p>
 
                 <p>{{ assignment.description }}</p>
+
+                <a href="{% url 'assignments:assignment_detail' assignment.id %}">
+                    View Assignment
+                </a>
             </div>
         {% endfor %}
     {% else %}
