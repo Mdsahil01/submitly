@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Review Submission - {{ assignment.title }} — Submitly{% endblock %}
+{% block title %}Review Submission - {{ assignment.title }} - Submitly{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width: 900px; margin: 0 auto; padding: 2rem;">
 
     <div style="margin-bottom: 2rem;">
-        <a href="{% url ''submissions:assignment_submissions'' assignment.id %}" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">
+        <a href="{% url 'submissions:assignment_submissions' assignment.id %}" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">
             ? Back to Submissions
         </a>
     </div>
@@ -47,9 +47,9 @@
         <div style="margin-bottom: 1rem;">
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Status</p>
             <p>
-                {% if submission.status == ''REVIEWED'' %}
+                {% if submission.status == 'REVIEWED' %}
                     <span style="background: var(--success); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Reviewed</span>
-                {% elif submission.status == ''LATE'' %}
+                {% elif submission.status == 'LATE' %}
                     <span style="background: var(--warning); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Late</span>
                 {% else %}
                     <span style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Submitted</span>
@@ -118,7 +118,7 @@
                 <button type="submit" style="background: var(--primary); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; font-size: 1rem;">
                     Save Evaluation
                 </button>
-                <a href="{% url ''submissions:assignment_submissions'' assignment.id %}" style="display: inline-block; padding: 0.75rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius-sm); text-decoration: none; color: var(--text); font-weight: 500;">
+                <a href="{% url 'submissions:assignment_submissions' assignment.id %}" style="display: inline-block; padding: 0.75rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius-sm); text-decoration: none; color: var(--text); font-weight: 500;">
                     Cancel
                 </a>
             </div>
