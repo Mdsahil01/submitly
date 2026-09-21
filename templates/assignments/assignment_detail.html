@@ -26,7 +26,7 @@
     {% if submission %}
         <hr>
 
-        <h2>Submission</h2>
+        <h2>Your Submission</h2>
 
         <p>
             <strong>Status:</strong>
@@ -38,11 +38,28 @@
             {{ submission.submitted_at|date:"d M Y, h:i A" }}
         </p>
 
-        <p>
-            <a href="{% url 'submissions:submission_detail' submission.id %}">
-                View Full Submission
-            </a>
-        </p>
+        {% if submission.status == 'REVIEWED' and submission.marks is not None %}
+            <p>
+                <strong>Marks:</strong>
+                {{ submission.marks }} / {{ assignment.max_marks }}
+            </p>
+            
+            <p>
+                <a href="{% url 'submissions:submission_detail' submission.id %}">
+                    View Result & Feedback
+                </a>
+            </p>
+        {% else %}
+            <p>
+                <em>Evaluation pending - Your submission is awaiting review.</em>
+            </p>
+            
+            <p>
+                <a href="{% url 'submissions:submission_detail' submission.id %}">
+                    View Submission Details
+                </a>
+            </p>
+        {% endif %}
 
     {% else %}
         <hr>
