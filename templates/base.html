@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -581,7 +581,6 @@
 
 <div class="app-shell">
 
-
     {% if user.is_authenticated %}
 
         <!-- =================================================
@@ -590,189 +589,109 @@
 
         <aside class="sidebar">
 
-            <a
-                href="{% url 'root' %}"
-                class="sidebar-brand"
-            >
-
-                <span class="brand-mark">
-                    S
-                </span>
-
-                <span class="brand-name">
-                    Submitly
-                </span>
-
+            <a href="{% url 'root' %}" class="sidebar-brand">
+                <span class="brand-mark">S</span>
+                <span class="brand-name">Submitly</span>
             </a>
-
 
             <div class="sidebar-content">
 
                 {% if user.is_student %}
 
                     <div class="nav-section">
+                        <div class="nav-label">Workspace</div>
 
-                        <div class="nav-label">
-                            Workspace
-                        </div>
-
-
-                        <a
-                            href="{% url 'student_dashboard' %}"
-                            class="nav-link"
-                        >
+                        <a href="{% url 'student_dashboard' %}" class="nav-link">
                             <span class="nav-icon">⌂</span>
                             <span>Dashboard</span>
                         </a>
 
-
-                        <a
-                            href="{% url 'assignments:student_assignments' %}"
-                            class="nav-link"
-                        >
+                        <a href="{% url 'assignments:student_assignments' %}" class="nav-link">
                             <span class="nav-icon">▣</span>
                             <span>Assignments</span>
                         </a>
 
-
-                        <a
-                            href="#"
-                            class="nav-link"
-                        >
+                        <a href="#" class="nav-link">
                             <span class="nav-icon">↗</span>
                             <span>Submissions</span>
                         </a>
 
-
-                        <a
-                            href="#"
-                            class="nav-link"
-                        >
+                        <a href="#" class="nav-link">
                             <span class="nav-icon">◫</span>
                             <span>Courses</span>
                         </a>
-
                     </div>
 
-
                     <div class="nav-section">
+                        <div class="nav-label">Account</div>
 
-                        <div class="nav-label">
-                            Account
-                        </div>
-
-
-                        <a
-                            href="#"
-                            class="nav-link"
-                        >
+                        <a href="#" class="nav-link">
                             <span class="nav-icon">⚙</span>
                             <span>Settings</span>
                         </a>
-
                     </div>
-
 
                 {% elif user.is_faculty %}
 
                     <div class="nav-section">
+                        <div class="nav-label">Workspace</div>
 
-                        <div class="nav-label">
-                            Workspace
-                        </div>
-
-
-                        <a
-                            href="{% url 'faculty_dashboard' %}"
-                            class="nav-link"
-                        >
+                        <a href="{% url 'faculty_dashboard' %}" class="nav-link">
                             <span class="nav-icon">⌂</span>
                             <span>Dashboard</span>
                         </a>
 
-
-                        <a
-                            href="{% url 'faculty_dashboard' %}"
-                            class="nav-link"
-                        >
+                        <a href="{% url 'faculty_dashboard' %}" class="nav-link">
                             <span class="nav-icon">▣</span>
                             <span>Assignments</span>
                         </a>
 
-
-                        <a
-                            href="#"
-                            class="nav-link"
-                        >
+                        <a href="#" class="nav-link">
                             <span class="nav-icon">◫</span>
                             <span>Courses</span>
                         </a>
 
-
-                        <a
-                            href="#"
-                            class="nav-link"
-                        >
+                        <a href="#" class="nav-link">
                             <span class="nav-icon">↗</span>
                             <span>Submissions</span>
                         </a>
-
                     </div>
 
-
                     <div class="nav-section">
+                        <div class="nav-label">Account</div>
 
-                        <div class="nav-label">
-                            Account
-                        </div>
-
-
-                        <a
-                            href="#"
-                            class="nav-link"
-                        >
+                        <a href="#" class="nav-link">
                             <span class="nav-icon">⚙</span>
                             <span>Settings</span>
                         </a>
-
                     </div>
 
                 {% endif %}
 
             </div>
 
-
             <div class="sidebar-footer">
-
-                <a
-                    href="#"
-                    class="sidebar-footer-link"
-                >
+                <a href="#" class="sidebar-footer-link">
                     <span class="nav-icon">◐</span>
                     <span>Dark mode</span>
                 </a>
-
             </div>
 
         </aside>
 
+    {% endif %}
 
-        <!-- =================================================
-             MAIN APPLICATION AREA
-        ================================================== -->
+    <div class="main-area {% if not user.is_authenticated %}public-main-area{% endif %}">
 
-        <div class="main-area">
+        {% if user.is_authenticated %}
 
             <header class="topbar">
 
                 <div class="topbar-left">
-
                     <span class="topbar-title">
                         {% block page_heading %}Submitly{% endblock %}
                     </span>
-
                 </div>
-
 
                 <div class="topbar-right">
 
@@ -782,9 +701,7 @@
                             {{ user.full_name|first|upper }}
                         </div>
 
-
                         <div class="user-details">
-
                             <span class="user-name">
                                 {{ user.full_name }}
                             </span>
@@ -792,76 +709,33 @@
                             <span class="user-role">
                                 {{ user.role }}
                             </span>
-
                         </div>
 
                     </div>
 
-
-                    <form
-                        method="post"
-                        action="{% url 'logout' %}"
-                    >
-
+                    <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
-
-                        <button
-                            type="submit"
-                            class="logout-btn"
-                        >
+                        <button type="submit" class="logout-btn">
                             Log out
                         </button>
-
                     </form>
 
                 </div>
 
             </header>
 
+        {% endif %}
 
-            <main class="page-content">
-
-                {% if messages %}
-
-                    <ul class="messages">
-
-                        {% for message in messages %}
-
-                            <li class="message {{ message.tags }}">
-                                {{ message }}
-                            </li>
-
-                        {% endfor %}
-
-                    </ul>
-
-                {% endif %}
-
-                {% block content %}{% endblock %}
-
-            </main>
-
-
-        </div>
-
-    {% else %}
-
-        <!-- =================================================
-             UNAUTHENTICATED VIEW
-        ================================================== -->
-
-        <main class="page-content" style="margin-left: 0;">
+        <main class="page-content">
 
             {% if messages %}
 
                 <ul class="messages">
 
                     {% for message in messages %}
-
                         <li class="message {{ message.tags }}">
                             {{ message }}
                         </li>
-
                     {% endfor %}
 
                 </ul>
@@ -872,7 +746,7 @@
 
         </main>
 
-    {% endif %}
+    </div>
 
 </div>
 
