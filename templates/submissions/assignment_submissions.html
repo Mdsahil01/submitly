@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}{{ assignment.title }} - Submissions — Submitly{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+
+    <div style="margin-bottom: 2rem;">
+        <a href="{% url 'faculty_dashboard' %}" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+        <h1 style="font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;">
+            {{ assignment.title }}
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            {{ assignment.course.code }} - {{ assignment.course.name }}
+        </p>
+    </div>
+
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2rem;">
+        <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">Submissions</h2>
+        
+        {% if submissions %}
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border);">
+                            <th style="text-align: left; padding: 0.75rem; font-weight: 600; color: var(--text-secondary);">Student</th>
+                            <th style="text-align: left; padding: 0.75rem; font-weight: 600; color: var(--text-secondary);">Email</th>
+                            <th style="text-align: left; padding: 0.75rem; font-weight: 600; color: var(--text-secondary);">Submitted</th>
+                            <th style="text-align: left; padding: 0.75rem; font-weight: 600; color: var(--text-secondary);">Status</th>
+                            <th style="text-align: left; padding: 0.75rem; font-weight: 600; color: var(--text-secondary);">Marks</th>
+                            <th style="text-align: center; padding: 0.75rem; font-weight: 600; color: var(--text-secondary);">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for submission in submissions %}
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 0.75rem; color: var(--text);">{{ submission.student.full_name }}</td>
+                                <td style="padding: 0.75rem; color: var(--text-secondary); font-size: 0.9rem;">{{ submission.student.email }}</td>
+                                <td style="padding: 0.75rem; color: var(--text-secondary); font-size: 0.9rem;">{{ submission.submitted_at|date:"d M Y, h:i A" }}</td>
+                                <td style="padding: 0.75rem;">
+                                    {% if submission.status == 'REVIEWED' %}
+                                        <span style="background: var(--success); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Reviewed</span>
+                                    {% elif submission.status == 'LATE' %}
+                                        <span style="background: var(--warning); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Late</span>
+                                    {% else %}
+                                        <span style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Submitted</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 0.75rem; color: var(--text); font-weight: 500;">
+                                    {% if submission.marks is not None %}
+                                        {{ submission.marks }} / {{ assignment.max_marks }}
+                                    {% else %}
+                                        <span style="color: var(--text-muted);">Not graded</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 0.75rem; text-align: center;">
+                                    <a href="{% url 'submissions:faculty_submission_review' submission.id %}" 
+                                       style="display: inline-block; background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-sm); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
+                                        Review
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                <p>No submissions yet for this assignment.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

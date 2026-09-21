@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Review Submission - {{ assignment.title }} — Submitly{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 2rem;">
+
+    <div style="margin-bottom: 2rem;">
+        <a href="{% url ''submissions:assignment_submissions'' assignment.id %}" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">
+            ? Back to Submissions
+        </a>
+    </div>
+
+    <div style="margin-bottom: 2rem;">
+        <h1 style="font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;">
+            Review Submission
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+            {{ assignment.title }} - {{ assignment.course.code }}
+        </p>
+    </div>
+
+    <!-- Student Information -->
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: var(--text);">Student Information</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+            <div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Name</p>
+                <p style="color: var(--text); font-weight: 500;">{{ submission.student.full_name }}</p>
+            </div>
+            <div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Email</p>
+                <p style="color: var(--text);">{{ submission.student.email }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submission Details -->
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: var(--text);">Submission Details</h2>
+        
+        <div style="margin-bottom: 1rem;">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Submitted At</p>
+            <p style="color: var(--text);">{{ submission.submitted_at|date:"d M Y, h:i A" }}</p>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Status</p>
+            <p>
+                {% if submission.status == ''REVIEWED'' %}
+                    <span style="background: var(--success); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Reviewed</span>
+                {% elif submission.status == ''LATE'' %}
+                    <span style="background: var(--warning); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Late</span>
+                {% else %}
+                    <span style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Submitted</span>
+                {% endif %}
+            </p>
+        </div>
+
+        {% if submission.content %}
+            <div style="margin-bottom: 1rem;">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Submission Content</p>
+                <div style="background: var(--bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                    <p style="color: var(--text); white-space: pre-wrap;">{{ submission.content }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if submission.file %}
+            <div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Attached File</p>
+                <div style="background: var(--bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <p style="color: var(--text); font-weight: 500; margin-bottom: 0.25rem;">{{ submission.file_name }}</p>
+                        <p style="color: var(--text-muted); font-size: 0.85rem;">Uploaded file</p>
+                    </div>
+                    <a href="{{ submission.file.url }}" 
+                       download="{{ submission.file_name }}"
+                       style="background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-sm); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
+                        Download
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Evaluation Form -->
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem;">
+        <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: var(--text);">Evaluation</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label for="{{ form.marks.id_for_label }}" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text);">
+                    Marks
+                </label>
+                {{ form.marks }}
+                {% if form.marks.help_text %}
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">{{ form.marks.help_text }}</p>
+                {% endif %}
+                {% if form.marks.errors %}
+                    <p style="color: var(--danger); font-size: 0.85rem; margin-top: 0.25rem;">{{ form.marks.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label for="{{ form.feedback.id_for_label }}" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text);">
+                    Feedback
+                </label>
+                {{ form.feedback }}
+                {% if form.feedback.errors %}
+                    <p style="color: var(--danger); font-size: 0.85rem; margin-top: 0.25rem;">{{ form.feedback.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button type="submit" style="background: var(--primary); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; font-size: 1rem;">
+                    Save Evaluation
+                </button>
+                <a href="{% url ''submissions:assignment_submissions'' assignment.id %}" style="display: inline-block; padding: 0.75rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius-sm); text-decoration: none; color: var(--text); font-weight: 500;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+
+        {% if submission.reviewed_at %}
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                <p style="font-size: 0.85rem; color: var(--text-muted);">
+                    Last reviewed: {{ submission.reviewed_at|date:"d M Y, h:i A" }}
+                </p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<style>
+    input[type="number"],
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-family: inherit;
+        font-size: 1rem;
+        color: var(--text);
+        background: var(--surface);
+    }
+
+    input[type="number"]:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.1);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 150px;
+    }
+</style>
+{% endblock %}

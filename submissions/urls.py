@@ -15,4 +15,14 @@ urlpatterns = [
         views.submission_detail,
         name="submission_detail",
     ),
+    path(
+        "assignment/<int:assignment_id>/",
+        views.assignment_submissions,
+        name="assignment_submissions",
+    ),
+    path(
+        "faculty/<int:submission_id>/review/",
+        views.faculty_submission_review,
+        name="faculty_submission_review",
+    ),
 ]

@@ -18,6 +18,12 @@ class Assignment(models.Model):
         limit_choices_to={"role": "FACULTY"},
     )
     due_date = models.DateTimeField()
+    max_marks = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        default=100.00,
+        verbose_name="Maximum Marks"
+    )
     is_published = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -10,6 +10,7 @@ class AssignmentForm(forms.ModelForm):
             "title",
             "description",
             "due_date",
+            "max_marks",
             "is_published",
         ]
 
@@ -28,6 +29,13 @@ class AssignmentForm(forms.ModelForm):
             "due_date": forms.DateTimeInput(
                 attrs={
                     "type": "datetime-local",
+                }
+            ),
+            "max_marks": forms.NumberInput(
+                attrs={
+                    "placeholder": "Enter maximum marks",
+                    "step": "0.01",
+                    "min": "0",
                 }
             ),
         }

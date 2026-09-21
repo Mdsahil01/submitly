@@ -63,6 +63,26 @@ class Submission(models.Model):
         default=STATUS_SUBMITTED,
     )
 
+    # Evaluation fields
+    marks = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Marks Awarded"
+    )
+
+    feedback = models.TextField(
+        blank=True,
+        verbose_name="Faculty Feedback"
+    )
+
+    reviewed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Reviewed At"
+    )
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -100,6 +120,17 @@ class Submission(models.Model):
             if self.file.size > self.MAX_FILE_SIZE:
                 raise ValidationError(
                     {"file": f"File size exceeds maximum allowed size of {self.MAX_FILE_SIZE / (1024 * 1024)}MB"}
+                )
+
+        # Marks validation
+        if self.marks is not None:
+            if self.marks < 0:
+                raise ValidationError(
+                    {"marks": "Marks cannot be negative."}
+                )
+            if self.assignment_id and self.marks > self.assignment.max_marks:
+                raise ValidationError(
+                    {"marks": f"Marks cannot exceed maximum marks ({self.assignment.max_marks})."}
                 )
 
     def save(self, *args, **kwargs):

@@ -22,14 +22,14 @@
 
     .dashboard-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: 1fr;
         gap: 1.5rem;
         margin-top: 1.5rem;
     }
 
     .card {
-        background-color: var(--card-bg);
-        border: 1px solid var(--border-color);
+        background-color: var(--surface);
+        border: 1px solid var(--border);
         border-radius: 0.5rem;
         padding: 1.5rem;
     }
@@ -38,22 +38,54 @@
         font-size: 1.125rem;
         font-weight: 600;
         margin-bottom: 0.75rem;
-        color: var(--text-main);
-    }
-
-    .card-body {
-        color: var(--text-muted);
-        font-size: 0.875rem;
+        color: var(--text);
     }
 
     .empty-state {
         padding: 1.5rem;
         background-color: #f8fafc;
-        border: 1px dashed var(--border-color);
+        border: 1px dashed var(--border);
         border-radius: 0.375rem;
         text-align: center;
         color: var(--text-muted);
         font-size: 0.875rem;
+    }
+
+    .assignment-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 0.375rem;
+    }
+
+    .assignment-card:last-child {
+        margin-bottom: 0;
+    }
+
+    .assignment-card h3 {
+        color: var(--text);
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .assignment-card p {
+        margin-bottom: 0.4rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .assignment-card a {
+        display: inline-block;
+        margin-top: 0.5rem;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+        margin-right: 1rem;
+    }
+
+    .assignment-card a:hover {
+        text-decoration: underline;
     }
 </style>
 {% endblock %}
@@ -67,52 +99,48 @@
 <div class="dashboard-grid">
     <div class="card" id="faculty-assignments-card">
         <h2 class="card-title">Managed Assignments</h2>
-        <div class="card-body">
-            <div class="empty-state">
-                {% if assignments %}
-    <div class="assignment-list">
-        {% for assignment in assignments %}
-            <div class="assignment-card">
-                <h3>{{ assignment.title }}</h3>
+        <div>
+            {% if assignments %}
+                <div class="assignment-list">
+                    {% for assignment in assignments %}
+                        <div class="assignment-card">
+                            <h3>{{ assignment.title }}</h3>
 
-                <p>
-                    <strong>Course:</strong>
-                    {{ assignment.course.code }} - {{ assignment.course.name }}
-                </p>
+                            <p>
+                                <strong>Course:</strong>
+                                {{ assignment.course.code }} - {{ assignment.course.name }}
+                            </p>
 
-                <p>
-                    <strong>Due:</strong>
-                    {{ assignment.due_date|date:"d M Y, h:i A" }}
-                </p>
+                            <p>
+                                <strong>Due:</strong>
+                                {{ assignment.due_date|date:"d M Y, h:i A" }}
+                            </p>
 
-                <p>
-                    <strong>Status:</strong>
-                    {% if assignment.is_published %}
-                        Published
-                    {% else %}
-                        Draft
-                    {% endif %}
-                </p>
+                            <p>
+                                <strong>Max Marks:</strong>
+                                {{ assignment.max_marks }}
+                            </p>
 
-                <p>{{ assignment.description }}</p>
-            </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <div class="empty-state">
-        <p>No assignments created yet.</p>
-    </div>
-{% endif %}
-            </div>
-        </div>
-    </div>
+                            <p>
+                                <strong>Status:</strong>
+                                {% if assignment.is_published %}
+                                    Published
+                                {% else %}
+                                    Draft
+                                {% endif %}
+                            </p>
 
-    <div class="card" id="faculty-reviews-card">
-        <h2 class="card-title">Pending Submissions for Review</h2>
-        <div class="card-body">
-            <div class="empty-state">
-                No submissions waiting for evaluation.
-            </div>
+                            <div>
+                                <a href="{% url 'submissions:assignment_submissions' assignment.id %}">View Submissions</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No assignments created yet.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
