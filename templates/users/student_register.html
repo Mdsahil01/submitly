@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Log In — Submitly{% endblock %}
+{% block title %}Create Student Account — Submitly{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -83,15 +83,15 @@
 
     .auth-footer {
         text-align: center;
-        margin-top: 1rem;
-        color: var(--text-muted);
+        margin-top: 1.25rem;
         font-size: 0.875rem;
+        color: var(--text-muted);
     }
 
     .auth-footer a {
         color: var(--primary);
-        font-weight: 600;
         text-decoration: none;
+        font-weight: 600;
     }
 
     .auth-footer a:hover {
@@ -103,10 +103,10 @@
 {% block content %}
 <div class="auth-card">
 
-    <h1 class="auth-title">Welcome Back</h1>
+    <h1 class="auth-title">Create Student Account</h1>
 
     <p class="auth-subtitle">
-        Log in with your academic credentials
+        Join Submitly and start learning
     </p>
 
     {% if form.non_field_errors %}
@@ -117,38 +117,51 @@
         </ul>
     {% endif %}
 
-    <form method="post" action="{% url 'login' %}">
+    <form method="post">
         {% csrf_token %}
 
-        {% if request.GET.next %}
+        <div class="form-group">
+            <label for="{{ form.full_name.id_for_label }}" class="form-label">
+                Full Name
+            </label>
+
             <input
-                type="hidden"
-                name="next"
-                value="{{ request.GET.next }}"
+                type="text"
+                name="{{ form.full_name.html_name }}"
+                id="{{ form.full_name.id_for_label }}"
+                class="form-control"
+                placeholder="Enter your full name"
+                value="{{ form.full_name.value|default_if_none:'' }}"
+                required
             >
-        {% endif %}
+
+            {% if form.full_name.errors %}
+                <ul class="field-errors">
+                    {% for error in form.full_name.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
 
         <div class="form-group">
-            <label for="id_username" class="form-label">
+            <label for="{{ form.email.id_for_label }}" class="form-label">
                 Email Address
             </label>
 
             <input
                 type="email"
-                name="username"
-                autofocus
-                autocapitalize="none"
-                autocomplete="email"
-                maxlength="254"
-                required
-                id="id_username"
+                name="{{ form.email.html_name }}"
+                id="{{ form.email.id_for_label }}"
                 class="form-control"
-                value="{{ form.username.value|default_if_none:'' }}"
+                placeholder="Enter your email address"
+                value="{{ form.email.value|default_if_none:'' }}"
+                required
             >
 
-            {% if form.username.errors %}
+            {% if form.email.errors %}
                 <ul class="field-errors">
-                    {% for error in form.username.errors %}
+                    {% for error in form.email.errors %}
                         <li>{{ error }}</li>
                     {% endfor %}
                 </ul>
@@ -156,22 +169,22 @@
         </div>
 
         <div class="form-group">
-            <label for="id_password" class="form-label">
+            <label for="{{ form.password1.id_for_label }}" class="form-label">
                 Password
             </label>
 
             <input
                 type="password"
-                name="password"
-                autocomplete="current-password"
-                required
-                id="id_password"
+                name="{{ form.password1.html_name }}"
+                id="{{ form.password1.id_for_label }}"
                 class="form-control"
+                autocomplete="new-password"
+                required
             >
 
-            {% if form.password.errors %}
+            {% if form.password1.errors %}
                 <ul class="field-errors">
-                    {% for error in form.password.errors %}
+                    {% for error in form.password1.errors %}
                         <li>{{ error }}</li>
                     {% endfor %}
                 </ul>
@@ -179,36 +192,39 @@
         </div>
 
         <div class="form-group">
-            <label for="id_role" class="form-label">
-                Login As
+            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                Confirm Password
             </label>
 
-            <select
-                name="role"
-                id="id_role"
+            <input
+                type="password"
+                name="{{ form.password2.html_name }}"
+                id="{{ form.password2.id_for_label }}"
                 class="form-control"
+                autocomplete="new-password"
                 required
             >
-                <option value="">Select your role</option>
-                <option value="STUDENT">Student</option>
-                <option value="FACULTY">Faculty</option>
-            </select>
+
+            {% if form.password2.errors %}
+                <ul class="field-errors">
+                    {% for error in form.password2.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
 
         <button
             type="submit"
             class="btn btn-primary btn-block"
-            id="login-submit-btn"
         >
-            Log In
+            Create Student Account
         </button>
     </form>
 
     <div class="auth-footer">
-        Don't have a student account?
-        <a href="{% url 'student_register' %}">
-            Register here
-        </a>
+        Already have an account?
+        <a href="{% url 'login' %}">Log in</a>
     </div>
 
 </div>

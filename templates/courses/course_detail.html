@@ -1,8 +1,9 @@
- {% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block title %}{{ course.name }} - Submitly{% endblock %}
 
 {% block content %}
+
 <div class="page-header">
     <h1>{{ course.name }}</h1>
     <p>{{ course.code }}</p>
@@ -17,48 +18,165 @@
     {{ course.faculty.full_name }}
 </p>
 
+
 {% if user.is_faculty %}
-    <h2>Enrolled Students</h2>
+
+    <hr>
+
+    <h2>Enrollment Requests</h2>
 
     {% if enrollments %}
-        <ul>
-            {% for enrollment in enrollments %}
-                <li>{{ enrollment.student.full_name }}</li>
-            {% endfor %}
-        </ul>
+
+        {% for enrollment in enrollments %}
+
+            <div
+                style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 1rem;
+                    padding: 1rem;
+                    margin-bottom: 0.75rem;
+                    background: var(--card-bg);
+                    border: 1px solid var(--border-color);
+                    border-radius: 0.5rem;
+                "
+            >
+
+                <div>
+                    <strong>
+                        {{ enrollment.student.full_name }}
+                    </strong>
+
+                    <div
+                        style="
+                            color: var(--text-muted);
+                            font-size: 0.875rem;
+                        "
+                    >
+                        {{ enrollment.student.email }}
+                    </div>
+
+                    <div style="margin-top: 0.25rem;">
+                        Status:
+                        <strong>
+                            {{ enrollment.get_status_display }}
+                        </strong>
+                    </div>
+                </div>
+
+
+                {% if enrollment.status == "PENDING" %}
+
+                    <div style="display: flex; gap: 0.5rem;">
+
+                        <form
+                            method="post"
+                            action="{% url 'courses:approve_enrollment' enrollment.id %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Approve
+                            </button>
+                        </form>
+
+
+                        <form
+                            method="post"
+                            action="{% url 'courses:reject_enrollment' enrollment.id %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn"
+                            >
+                                Reject
+                            </button>
+                        </form>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
     {% else %}
-        <p>No students are enrolled in this course.</p>
+
+        <p style="color: var(--text-muted);">
+            No enrollment requests yet.
+        </p>
+
     {% endif %}
 
-    <p>
+
+    <p style="margin-top: 1.5rem;">
         <a href="{% url 'assignments:create_assignment' course.id %}">
             Create Assignment
         </a>
     </p>
+
 {% endif %}
+
 
 <h2>Assignments</h2>
 
 {% if assignments %}
+
     {% for assignment in assignments %}
-        <div>
-            <h3>{{ assignment.title }}</h3>
-            <p>{{ assignment.description }}</p>
+
+        <div
+            style="
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 0.5rem;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            "
+        >
+
+            <h3>
+                {{ assignment.title }}
+            </h3>
+
+            <p>
+                {{ assignment.description }}
+            </p>
 
             {% if user.is_student and assignment.is_published %}
-                <a href="{% url 'assignments:assignment_detail' assignment.id %}">
+
+                <a
+                    href="{% url 'assignments:assignment_detail' assignment.id %}"
+                    class="btn btn-primary"
+                >
                     View Assignment
                 </a>
+
             {% endif %}
+
         </div>
+
     {% endfor %}
+
 {% else %}
-    <p>No assignments available.</p>
+
+    <p>
+        No assignments available.
+    </p>
+
 {% endif %}
 
-<p>
+
+<p style="margin-top: 1.5rem;">
     <a href="{% url 'courses:course_list' %}">
-        Back to Courses
+        ← Back to Courses
     </a>
 </p>
+
 {% endblock %}

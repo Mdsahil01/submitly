@@ -1,33 +1,193 @@
 {% extends "base.html" %}
 
-{% block title %}Courses - Submitly{% endblock %}
+{% block title %}Courses — Submitly{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1>Courses</h1>
-    <p>View and manage your courses.</p>
+
+<div class="container">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <div>
+            <h1>Courses</h1>
+
+            {% if user.is_student %}
+                <p style="color: var(--text-muted);">
+                    Browse courses and request enrollment.
+                </p>
+            {% else %}
+                <p style="color: var(--text-muted);">
+                    Manage your courses and students.
+                </p>
+            {% endif %}
+        </div>
+
+        {% if user.is_faculty %}
+            <a
+                href="{% url 'courses:course_create' %}"
+                class="btn btn-primary"
+            >
+                + Create Course
+            </a>
+        {% endif %}
+    </div>
+
+
+    {% if courses %}
+
+        <div style="display: grid; gap: 1rem;">
+
+            {% for course in courses %}
+
+                <div
+                    style="
+                        background: var(--card-bg);
+                        border: 1px solid var(--border-color);
+                        border-radius: 0.75rem;
+                        padding: 1.25rem;
+                    "
+                >
+
+                    <h2 style="margin-top: 0;">
+                        {{ course.code }}
+                    </h2>
+
+                    <p style="font-size: 1rem; font-weight: 600;">
+                        {{ course.name }}
+                    </p>
+
+                    {% if course.description %}
+                        <p style="color: var(--text-muted);">
+                            {{ course.description }}
+                        </p>
+                    {% endif %}
+
+
+                    {% if user.is_student %}
+
+                        {% with enrollment=course.student_enrollments|first %}
+
+                            {% if enrollment %}
+
+                                {% if enrollment.status == "APPROVED" %}
+
+                                    <span style="color: green; font-weight: 600;">
+                                        ✓ Enrolled
+                                    </span>
+
+                                    <div style="margin-top: 0.75rem;">
+                                        <a
+                                            href="{% url 'courses:course_detail' course.id %}"
+                                            class="btn btn-primary"
+                                        >
+                                            View Course
+                                        </a>
+                                    </div>
+
+                                {% elif enrollment.status == "PENDING" %}
+
+                                    <span style="color: #b45309; font-weight: 600;">
+                                        ⏳ Enrollment Pending
+                                    </span>
+
+                                {% elif enrollment.status == "REJECTED" %}
+
+                                    <span style="color: var(--danger); font-weight: 600;">
+                                        Enrollment Rejected
+                                    </span>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'courses:enroll_course' course.id %}"
+                                        style="margin-top: 0.75rem;"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-primary"
+                                        >
+                                            Request Again
+                                        </button>
+                                    </form>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <form
+                                    method="post"
+                                    action="{% url 'courses:enroll_course' course.id %}"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                    >
+                                        Request Enrollment
+                                    </button>
+                                </form>
+
+                            {% endif %}
+
+                        {% endwith %}
+
+                    {% else %}
+
+                        <div style="margin-top: 0.75rem;">
+                            <a
+                                href="{% url 'courses:course_detail' course.id %}"
+                                class="btn btn-primary"
+                            >
+                                View Course
+                            </a>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div
+            style="
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 0.75rem;
+                padding: 2rem;
+                text-align: center;
+            "
+        >
+            <h2>No Courses Yet</h2>
+
+            {% if user.is_faculty %}
+
+                <p style="color: var(--text-muted);">
+                    Create your first course to get started.
+                </p>
+
+                <a
+                    href="{% url 'courses:course_create' %}"
+                    class="btn btn-primary"
+                >
+                    Create Course
+                </a>
+
+            {% else %}
+
+                <p style="color: var(--text-muted);">
+                    There are no courses available for enrollment yet.
+                </p>
+
+            {% endif %}
+        </div>
+
+    {% endif %}
+
 </div>
 
-{% if user.is_faculty %}
-    <a href="{% url 'courses:course_create' %}">Create Course</a>
-{% endif %}
-
-{% if courses %}
-    {% for course in courses %}
-        <div>
-            <h2>{{ course.name }}</h2>
-            <p><strong>Code:</strong> {{ course.code }}</p>
-
-            {% if course.description %}
-                <p>{{ course.description }}</p>
-            {% endif %}
-
-            <a href="{% url 'courses:course_detail' course.id %}">
-                View Course
-            </a>
-        </div>
-    {% endfor %}
-{% else %}
-    <p>No courses found.</p>
-{% endif %}
 {% endblock %}
