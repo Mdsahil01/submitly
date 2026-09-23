@@ -282,6 +282,9 @@
             display: flex;
             flex-direction: column;
         }
+        .public-main-area {
+    margin-left: 0;
+}
 
 
         /* =====================================================
@@ -328,11 +331,17 @@
            USER PROFILE
         ===================================================== */
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-        }
+       .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+        .user-profile:hover {
+    color: var(--primary);
+}
 
         .user-avatar {
             width: 34px;
@@ -626,10 +635,7 @@
                             <span>Assignments</span>
                         </a>
 
-                        <a href="#" class="nav-link">
-                            <span class="nav-icon">↗</span>
-                            <span>Submissions</span>
-                        </a>
+                         
 
                         <a href="{% url 'courses:course_list' %}" class="nav-link">
                             <span class="nav-icon">◫</span>
@@ -637,14 +643,7 @@
                         </a>
                     </div>
 
-                    <div class="nav-section">
-                        <div class="nav-label">Account</div>
-
-                        <a href="#" class="nav-link">
-                            <span class="nav-icon">⚙</span>
-                            <span>Settings</span>
-                        </a>
-                    </div>
+                     
 
                 {% elif user.is_faculty %}
 
@@ -666,30 +665,17 @@
                             <span>Courses</span>
                         </a>
 
-                        <a href="#" class="nav-link">
-                            <span class="nav-icon">↗</span>
-                            <span>Submissions</span>
-                        </a>
+                         
                     </div>
 
                     <div class="nav-section">
                         <div class="nav-label">Account</div>
 
-                        <a href="#" class="nav-link">
-                            <span class="nav-icon">⚙</span>
-                            <span>Settings</span>
-                        </a>
+                        
                     </div>
 
                 {% endif %}
 
-            </div>
-
-            <div class="sidebar-footer">
-                <a href="#" class="sidebar-footer-link">
-                    <span class="nav-icon">◐</span>
-                    <span>Dark mode</span>
-                </a>
             </div>
 
         </aside>
@@ -712,6 +698,9 @@
 
                     <div class="user-profile">
 
+                        <a href="{% url 'profile' %}" class="user-profile">
+
+
                         <div class="user-avatar">
                             {{ user.full_name|first|upper }}
                         </div>
@@ -725,6 +714,8 @@
                                 {{ user.role }}
                             </span>
                         </div>
+
+                        </a>
 
                     </div>
 

@@ -1,15 +1,43 @@
 {% extends "base.html" %}
 
 {% block title %}{{ assignment.title }} - Submissions — Submitly{% endblock %}
+{% block extra_css %}
+<style>
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem 1rem;
+        border-radius: var(--radius-sm);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: background 0.15s ease, transform 0.15s ease;
+    }
 
+    .action-btn-secondary {
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+    }
+
+    .action-btn-secondary:hover {
+        background: var(--surface-hover);
+        transform: translateY(-1px);
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
 
     <div style="margin-bottom: 2rem;">
-        <a href="{% url 'faculty_dashboard' %}" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">
-            ← Back to Dashboard
-        </a>
-    </div>
+    <a
+        href="{% url 'faculty_dashboard' %}"
+        class="action-btn action-btn-secondary"
+    >
+        ← Back to Dashboard
+    </a>
+</div>
 
     <div style="margin-bottom: 2rem;">
         <h1 style="font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;">

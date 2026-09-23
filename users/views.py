@@ -142,6 +142,16 @@ def dashboard_redirect_view(request):
         "User does not have an assigned role dashboard."
     )
 
+@login_required
+def profile_view(request):
+    return render(
+        request,
+        "users/profile.html",
+        {
+            "user": request.user,
+        },
+    )
+
 
 @student_required
 def student_dashboard_view(request):

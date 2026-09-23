@@ -1,4 +1,38 @@
 {% extends "base.html" %}
+{% block extra_css %}
+<style>
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem 1rem;
+        border-radius: 0.375rem;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: background 0.15s ease;
+    }
+
+    .action-btn-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .action-btn-primary:hover {
+        background: var(--primary-hover);
+    }
+
+    .action-btn-secondary {
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+    }
+
+    .action-btn-secondary:hover {
+        background: var(--surface-hover);
+    }
+</style>
+{% endblock %}
 
 {% block title %}{{ assignment.title }} — Submitly{% endblock %}
 
@@ -34,9 +68,13 @@
     </p>
 
     <p>
-        <a href="{{ assignment.reference_file.url }}" download>
-            Download Reference File
-        </a>
+        <a
+    href="{{ assignment.reference_file.url }}"
+    download
+    class="action-btn action-btn-secondary"
+>
+    Download Reference File
+</a>
     </p>
 {% endif %}
     {% if submission %}
@@ -60,29 +98,34 @@
                 {{ submission.marks }} / {{ assignment.max_marks }}
             </p>
             
-            <p>
-                <a href="{% url 'submissions:submission_detail' submission.id %}">
-                    View Result & Feedback
-                </a>
-            </p>
+           <a
+    href="{% url 'submissions:submission_detail' submission.id %}"
+    class="action-btn action-btn-primary"
+>
+    View Result & Feedback
+</a>
         {% else %}
             <p>
                 <em>Evaluation pending - Your submission is awaiting review.</em>
             </p>
             
-            <p>
-                <a href="{% url 'submissions:submission_detail' submission.id %}">
-                    View Submission Details
-                </a>
-            </p>
+          <a
+    href="{% url 'submissions:submission_detail' submission.id %}"
+    class="action-btn action-btn-secondary"
+>
+    View Submission Details
+</a>
         {% endif %}
 
     {% else %}
         <hr>
 
-        <a href="{% url 'submissions:create_submission' assignment.id %}">
-            Submit Assignment
-        </a>
+        <a
+    href="{% url 'submissions:create_submission' assignment.id %}"
+    class="action-btn action-btn-primary"
+>
+    Submit Assignment
+</a>
     {% endif %}
 
 </div>

@@ -75,18 +75,29 @@
         font-size: 0.9rem;
     }
 
-    .assignment-card a {
-        display: inline-block;
-        margin-top: 0.5rem;
-        font-weight: 600;
-        color: var(--primary);
-        text-decoration: none;
-        margin-right: 1rem;
-    }
+    
+    .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
 
-    .assignment-card a:hover {
-        text-decoration: underline;
-    }
+.action-btn-primary {
+    background: var(--primary);
+    color: white !important;
+}
+
+.action-btn-primary:hover {
+    background: var(--primary-hover);
+    text-decoration: none !important;
+    transform: translateY(-1px);
+}
 </style>
 {% endblock %}
 
@@ -131,7 +142,12 @@
                             </p>
 
                             <div>
-                                <a href="{% url 'submissions:assignment_submissions' assignment.id %}">View Submissions</a>
+                               <a
+    href="{% url 'submissions:assignment_submissions' assignment.id %}"
+    class="action-btn action-btn-primary"
+>
+    View Submissions
+</a>
                             </div>
                         </div>
                     {% endfor %}

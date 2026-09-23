@@ -1,6 +1,41 @@
 {% extends "base.html" %}
 
 {% block title %}Courses — Submitly{% endblock %}
+{% block extra_css %}
+<style>
+    .course-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 1.25rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .course-code {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .course-name {
+        margin-top: 0.35rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    .course-description {
+        margin-top: 0.5rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+    }
+
+    .course-action {
+        margin-top: 0.9rem;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 
@@ -47,19 +82,19 @@
                     "
                 >
 
-                    <h2 style="margin-top: 0;">
-                        {{ course.code }}
-                    </h2>
+                    <h2 class="course-code">
+    {{ course.code }}
+</h2>
 
-                    <p style="font-size: 1rem; font-weight: 600;">
-                        {{ course.name }}
-                    </p>
+<p class="course-name">
+    {{ course.name }}
+</p>
 
-                    {% if course.description %}
-                        <p style="color: var(--text-muted);">
-                            {{ course.description }}
-                        </p>
-                    {% endif %}
+                   {% if course.description %}
+    <p class="course-description">
+        {{ course.description }}
+    </p>
+{% endif %}
 
 
                     {% if user.is_student %}
@@ -74,7 +109,7 @@
                                         ✓ Enrolled
                                     </span>
 
-                                    <div style="margin-top: 0.75rem;">
+                                    <div class="course-action">
                                         <a
                                             href="{% url 'courses:course_detail' course.id %}"
                                             class="btn btn-primary"

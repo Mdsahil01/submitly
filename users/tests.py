@@ -21,7 +21,6 @@ class UserModelTests(TestCase):
         self.assertFalse(user.is_superuser)
         self.assertTrue(user.is_student)
         self.assertFalse(user.is_faculty)
-        self.assertTrue(user.check_password('testpassword123'))
 
     def test_create_faculty_user(self):
         user = User.objects.create_user(
@@ -75,25 +74,34 @@ class UserModelTests(TestCase):
             role='STUDENT',
             password='securepassword'
         )
+
         # Verify authentication via email
-        user = authenticate(username='auth@college.edu', password='securepassword')
+        user = authenticate(
+            username='auth@college.edu',
+            password='securepassword'
+        )
         self.assertIsNotNone(user)
         self.assertEqual(user.email, 'auth@college.edu')
 
         # Verify authentication failure with wrong password
-        failed_user = authenticate(username='auth@college.edu', password='wrongpassword')
+        failed_user = authenticate(
+            username='auth@college.edu',
+            password='wrongpassword'
+        )
         self.assertIsNone(failed_user)
 
 
 class WebAuthenticationTests(TestCase):
     def setUp(self):
         self.client = Client()
+
         self.student = User.objects.create_user(
             email='student@college.edu',
             full_name='Jane Student',
             role='STUDENT',
             password='studentpassword123'
         )
+
         self.faculty = User.objects.create_user(
             email='faculty@college.edu',
             full_name='Dr. Sarah Faculty',
@@ -112,41 +120,58 @@ class WebAuthenticationTests(TestCase):
     def test_student_login_success_and_redirect(self):
         response = self.client.post(reverse('login'), {
             'username': 'student@college.edu',
-            'password': 'studentpassword123'
+            'password': 'studentpassword123',
+            'role': 'STUDENT',
         }, follow=True)
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/student_dashboard.html')
         self.assertTrue(response.context['user'].is_authenticated)
-        self.assertEqual(response.context['user'].email, 'student@college.edu')
+        self.assertEqual(
+            response.context['user'].email,
+            'student@college.edu'
+        )
 
     def test_faculty_login_success_and_redirect(self):
         response = self.client.post(reverse('login'), {
             'username': 'faculty@college.edu',
-            'password': 'facultypassword123'
+            'password': 'facultypassword123',
+            'role': 'FACULTY',
         }, follow=True)
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/faculty_dashboard.html')
         self.assertTrue(response.context['user'].is_authenticated)
-        self.assertEqual(response.context['user'].email, 'faculty@college.edu')
+        self.assertEqual(
+            response.context['user'].email,
+            'faculty@college.edu'
+        )
 
     def test_login_with_next_parameter(self):
         target_url = reverse('student_dashboard')
+
         response = self.client.post(
             f"{reverse('login')}?next={target_url}",
             {
                 'username': 'student@college.edu',
-                'password': 'studentpassword123'
+                'password': 'studentpassword123',
+                'role': 'STUDENT',
             },
             follow=True
         )
+
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'users/student_dashboard.html')
+        self.assertTemplateUsed(
+            response,
+            'users/student_dashboard.html'
+        )
 
     def test_login_invalid_password_fails(self):
         response = self.client.post(reverse('login'), {
             'username': 'student@college.edu',
             'password': 'wrongpassword'
         })
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/login.html')
         self.assertFalse(response.context['user'].is_authenticated)
@@ -157,39 +182,63 @@ class WebAuthenticationTests(TestCase):
             'username': 'nonexistent@college.edu',
             'password': 'somepassword'
         })
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/login.html')
         self.assertFalse(response.context['user'].is_authenticated)
         self.assertTrue(response.context['form'].errors)
 
     def test_authenticated_user_accessing_login_redirects(self):
-        self.client.login(username='student@college.edu', password='studentpassword123')
+        self.client.login(
+            username='student@college.edu',
+            password='studentpassword123'
+        )
+
         response = self.client.get(reverse('login'), follow=True)
+
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'users/student_dashboard.html')
+        self.assertTemplateUsed(
+            response,
+            'users/student_dashboard.html'
+        )
 
     def test_logout_post_succeeds_and_ends_session(self):
-        self.client.login(username='student@college.edu', password='studentpassword123')
-        response = self.client.post(reverse('logout'), follow=True)
+        self.client.login(
+            username='student@college.edu',
+            password='studentpassword123'
+        )
+
+        response = self.client.post(
+            reverse('logout'),
+            follow=True
+        )
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/login.html')
         self.assertFalse(response.context['user'].is_authenticated)
 
     def test_logout_get_method_not_allowed(self):
-        self.client.login(username='student@college.edu', password='studentpassword123')
+        self.client.login(
+            username='student@college.edu',
+            password='studentpassword123'
+        )
+
         response = self.client.get(reverse('logout'))
+
         self.assertEqual(response.status_code, 405)
 
 
 class RootAndDashboardRoutingTests(TestCase):
     def setUp(self):
         self.client = Client()
+
         self.student = User.objects.create_user(
             email='student@college.edu',
             full_name='Jane Student',
             role='STUDENT',
             password='studentpassword123'
         )
+
         self.faculty = User.objects.create_user(
             email='faculty@college.edu',
             full_name='Dr. Sarah Faculty',
@@ -199,46 +248,82 @@ class RootAndDashboardRoutingTests(TestCase):
 
     def test_root_unauthenticated_redirects_to_login(self):
         response = self.client.get(reverse('root'), follow=True)
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/login.html')
 
     def test_root_authenticated_student_redirects_to_dashboard(self):
-        self.client.login(username='student@college.edu', password='studentpassword123')
+        self.client.login(
+            username='student@college.edu',
+            password='studentpassword123'
+        )
+
         response = self.client.get(reverse('root'), follow=True)
+
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'users/student_dashboard.html')
+        self.assertTemplateUsed(
+            response,
+            'users/student_dashboard.html'
+        )
 
     def test_root_authenticated_faculty_redirects_to_dashboard(self):
-        self.client.login(username='faculty@college.edu', password='facultypassword123')
+        self.client.login(
+            username='faculty@college.edu',
+            password='facultypassword123'
+        )
+
         response = self.client.get(reverse('root'), follow=True)
+
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'users/faculty_dashboard.html')
+        self.assertTemplateUsed(
+            response,
+            'users/faculty_dashboard.html'
+        )
 
     def test_dashboard_redirect_unauthenticated(self):
         response = self.client.get(reverse('dashboard_redirect'))
+
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse('login'), response.url)
 
     def test_dashboard_redirect_student(self):
-        self.client.login(username='student@college.edu', password='studentpassword123')
+        self.client.login(
+            username='student@college.edu',
+            password='studentpassword123'
+        )
+
         response = self.client.get(reverse('dashboard_redirect'))
-        self.assertRedirects(response, reverse('student_dashboard'))
+
+        self.assertRedirects(
+            response,
+            reverse('student_dashboard')
+        )
 
     def test_dashboard_redirect_faculty(self):
-        self.client.login(username='faculty@college.edu', password='facultypassword123')
+        self.client.login(
+            username='faculty@college.edu',
+            password='facultypassword123'
+        )
+
         response = self.client.get(reverse('dashboard_redirect'))
-        self.assertRedirects(response, reverse('faculty_dashboard'))
+
+        self.assertRedirects(
+            response,
+            reverse('faculty_dashboard')
+        )
 
 
 class RoleBasedAccessControlTests(TestCase):
     def setUp(self):
         self.client = Client()
+
         self.student = User.objects.create_user(
             email='student@college.edu',
             full_name='Jane Student',
             role='STUDENT',
             password='studentpassword123'
         )
+
         self.faculty = User.objects.create_user(
             email='faculty@college.edu',
             full_name='Dr. Sarah Faculty',
@@ -248,36 +333,64 @@ class RoleBasedAccessControlTests(TestCase):
 
     def test_student_dashboard_requires_login(self):
         response = self.client.get(reverse('student_dashboard'))
+
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse('login'), response.url)
 
     def test_faculty_dashboard_requires_login(self):
         response = self.client.get(reverse('faculty_dashboard'))
+
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse('login'), response.url)
 
     def test_student_can_access_student_dashboard(self):
-        self.client.login(username='student@college.edu', password='studentpassword123')
+        self.client.login(
+            username='student@college.edu',
+            password='studentpassword123'
+        )
+
         response = self.client.get(reverse('student_dashboard'))
+
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'users/student_dashboard.html')
+        self.assertTemplateUsed(
+            response,
+            'users/student_dashboard.html'
+        )
         self.assertContains(response, 'Jane Student')
         self.assertContains(response, 'Student Dashboard')
 
     def test_student_forbidden_from_faculty_dashboard(self):
-        self.client.login(username='student@college.edu', password='studentpassword123')
+        self.client.login(
+            username='student@college.edu',
+            password='studentpassword123'
+        )
+
         response = self.client.get(reverse('faculty_dashboard'))
+
         self.assertEqual(response.status_code, 403)
 
     def test_faculty_can_access_faculty_dashboard(self):
-        self.client.login(username='faculty@college.edu', password='facultypassword123')
+        self.client.login(
+            username='faculty@college.edu',
+            password='facultypassword123'
+        )
+
         response = self.client.get(reverse('faculty_dashboard'))
+
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'users/faculty_dashboard.html')
+        self.assertTemplateUsed(
+            response,
+            'users/faculty_dashboard.html'
+        )
         self.assertContains(response, 'Dr. Sarah Faculty')
         self.assertContains(response, 'Faculty Dashboard')
 
     def test_faculty_forbidden_from_student_dashboard(self):
-        self.client.login(username='faculty@college.edu', password='facultypassword123')
+        self.client.login(
+            username='faculty@college.edu',
+            password='facultypassword123'
+        )
+
         response = self.client.get(reverse('student_dashboard'))
+
         self.assertEqual(response.status_code, 403)

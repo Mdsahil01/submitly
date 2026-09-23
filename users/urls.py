@@ -13,5 +13,10 @@ urlpatterns = [
     path('dashboard/', views.dashboard_redirect_view, name='dashboard_redirect'),
     path('student/dashboard/', views.student_dashboard_view, name='student_dashboard'),
     path('faculty/dashboard/', views.faculty_dashboard_view, name='faculty_dashboard'),
+    path(
+    "profile/",
+    views.profile_view,
+    name="profile",
+),
     
 ]

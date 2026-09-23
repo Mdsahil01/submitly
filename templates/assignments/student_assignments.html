@@ -1,33 +1,153 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="container">
-    <h1>My Assignments</h1>
+{% block title %}My Assignments — Submitly{% endblock %}
 
-    {% if assignments %}
+{% block extra_css %}
+<style>
+    .assignments-header {
+        margin-bottom: 2rem;
+    }
+
+    .assignments-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.35rem;
+    }
+
+    .assignments-subtitle {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    .assignments-list {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .assignment-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .assignment-card h2 {
+        font-size: 1.15rem;
+        font-weight: 650;
+        color: var(--text);
+        margin-bottom: 0.75rem;
+    }
+
+    .assignment-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+        margin-bottom: 1rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .assignment-meta strong {
+        color: var(--text);
+    }
+
+    .assignment-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1.25rem;
+    }
+
+    .assignment-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem 1rem;
+        background: var(--primary);
+        color: white;
+        border-radius: var(--radius-sm);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .assignment-action:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+    }
+
+    .empty-state {
+        background: var(--surface);
+        border: 1px dashed var(--border);
+        border-radius: var(--radius-md);
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        color: var(--text-muted);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="assignments-header">
+    <h1 class="assignments-title">My Assignments</h1>
+    <p class="assignments-subtitle">
+        View your current assignments and submission deadlines.
+    </p>
+</div>
+
+{% if assignments %}
+
+    <div class="assignments-list">
+
         {% for assignment in assignments %}
+
             <div class="assignment-card">
+
                 <h2>{{ assignment.title }}</h2>
 
-                <p>
-                    <strong>Course:</strong>
-                    {{ assignment.course.code }} - {{ assignment.course.name }}
+                <div class="assignment-meta">
+
+                    <span>
+                        <strong>Course:</strong>
+                        {{ assignment.course.code }} - {{ assignment.course.name }}
+                    </span>
+
+                    <span>
+                        <strong>Due:</strong>
+                        {{ assignment.due_date|date:"d M Y, h:i A" }}
+                    </span>
+
+                </div>
+
+                <p class="assignment-description">
+                    {{ assignment.description }}
                 </p>
 
-                <p>
-                    <strong>Due:</strong>
-                    {{ assignment.due_date|date:"d M Y, h:i A" }}
-                </p>
-
-                <p>{{ assignment.description }}</p>
-
-                <a href="{% url 'assignments:assignment_detail' assignment.id %}">
+                <a
+                    href="{% url 'assignments:assignment_detail' assignment.id %}"
+                    class="assignment-action"
+                >
                     View Assignment
                 </a>
+
             </div>
+
         {% endfor %}
-    {% else %}
-        <p>No assignments available.</p>
-    {% endif %}
-</div>
+
+    </div>
+
+{% else %}
+
+    <div class="empty-state">
+        <strong>No assignments available.</strong>
+        <p style="margin-top: 0.4rem;">
+            You currently have no published assignments.
+        </p>
+    </div>
+
+{% endif %}
+
 {% endblock %}

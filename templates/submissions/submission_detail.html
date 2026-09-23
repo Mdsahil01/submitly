@@ -157,12 +157,6 @@
 {% block content %}
 <div class="container">
 
-    <div class="back-link" style="margin-bottom: 1rem;">
-        <a href="{% url 'assignments:assignment_detail' assignment.id %}" class="back-link">
-            ← Back to Assignment
-        </a>
-    </div>
-
     <div class="page-header">
         <h1 class="page-title">Submission & Results</h1>
         <p class="page-subtitle">
@@ -263,7 +257,28 @@
                 </a>
             </div>
         {% endif %}
+        </div>
+
+    <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
+
+        <a
+            href="{% url 'assignments:assignment_detail' assignment.id %}"
+            class="back-link"
+            style="margin-top: 0;"
+        >
+            ← Back to Assignment
+        </a>
+
+        <a
+            href="{% url 'student_dashboard' %}"
+            class="back-link"
+            style="margin-top: 0;"
+        >
+            ← Back to Dashboard
+        </a>
+
     </div>
 
 </div>
+
 {% endblock %}

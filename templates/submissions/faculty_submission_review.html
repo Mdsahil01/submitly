@@ -2,162 +2,481 @@
 
 {% block title %}Review Submission - {{ assignment.title }} - Submitly{% endblock %}
 
+{% block extra_css %}
+<style>
+    .review-page {
+        max-width: 900px;
+    }
+
+    .review-header {
+        margin-bottom: 2rem;
+    }
+
+    .review-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0 0 0.5rem;
+    }
+
+    .review-subtitle {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    .review-back {
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .review-back:hover {
+        text-decoration: underline;
+    }
+
+    .review-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .review-card h2 {
+        margin: 0 0 1.25rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .student-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+
+    .info-label {
+        margin: 0 0 0.3rem;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .info-value {
+        margin: 0;
+        color: var(--text);
+        font-size: 0.95rem;
+    }
+
+    .submission-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.3rem 0.75rem;
+        border-radius: 999px;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status-reviewed {
+        background: var(--success);
+    }
+
+    .status-late {
+        background: var(--warning);
+    }
+
+    .status-submitted {
+        background: var(--primary);
+    }
+
+    .content-box {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        color: var(--text);
+        white-space: pre-wrap;
+        line-height: 1.6;
+    }
+
+    .file-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1rem;
+    }
+
+    .file-name {
+        margin: 0 0 0.25rem;
+        color: var(--text);
+        font-weight: 600;
+    }
+
+    .file-description {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    .review-download {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem 1rem;
+        background: var(--primary);
+        color: white;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .review-download:hover {
+        background: var(--primary-hover);
+    }
+
+    .evaluation-form p {
+        margin-bottom: 1.25rem;
+    }
+
+    .evaluation-form label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text);
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .evaluation-form input[type="number"],
+    .evaluation-form textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        background: var(--surface);
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
+
+    .evaluation-form input[type="number"]:focus,
+    .evaluation-form textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .evaluation-form textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .field-help {
+        margin-top: 0.4rem;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    .field-error {
+        margin-top: 0.4rem;
+        color: var(--danger);
+        font-size: 0.8rem;
+    }
+
+    .review-actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .review-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.65rem 1.1rem;
+        border-radius: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .review-btn-primary {
+        background: var(--primary);
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .review-btn-primary:hover {
+        background: var(--primary-hover);
+    }
+
+    .review-btn-secondary {
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+    }
+
+    .review-btn-secondary:hover {
+        background: var(--surface-hover);
+    }
+
+    .reviewed-note {
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container" style="max-width: 900px; margin: 0 auto; padding: 2rem;">
 
-    <div style="margin-bottom: 2rem;">
-        <a href="{% url 'submissions:assignment_submissions' assignment.id %}" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">
-            ? Back to Submissions
-        </a>
-    </div>
+<div class="review-page">
 
-    <div style="margin-bottom: 2rem;">
-        <h1 style="font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;">
-            Review Submission
-        </h1>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">
-            {{ assignment.title }} - {{ assignment.course.code }}
+    <a
+        href="{% url 'submissions:assignment_submissions' assignment.id %}"
+        class="review-back"
+    >
+        ← Back to Submissions
+    </a>
+
+
+    <div class="review-header">
+
+        <h1>Review Submission</h1>
+
+        <p class="review-subtitle">
+            {{ assignment.title }} — {{ assignment.course.code }}
         </p>
+
     </div>
+
 
     <!-- Student Information -->
-    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1.5rem;">
-        <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: var(--text);">Student Information</h2>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+
+    <div class="review-card">
+
+        <h2>Student Information</h2>
+
+        <div class="student-grid">
+
             <div>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Name</p>
-                <p style="color: var(--text); font-weight: 500;">{{ submission.student.full_name }}</p>
-            </div>
-            <div>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Email</p>
-                <p style="color: var(--text);">{{ submission.student.email }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Submission Details -->
-    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1.5rem;">
-        <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: var(--text);">Submission Details</h2>
-        
-        <div style="margin-bottom: 1rem;">
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Submitted At</p>
-            <p style="color: var(--text);">{{ submission.submitted_at|date:"d M Y, h:i A" }}</p>
-        </div>
-
-        <div style="margin-bottom: 1rem;">
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Status</p>
-            <p>
-                {% if submission.status == 'REVIEWED' %}
-                    <span style="background: var(--success); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Reviewed</span>
-                {% elif submission.status == 'LATE' %}
-                    <span style="background: var(--warning); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Late</span>
-                {% else %}
-                    <span style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;">Submitted</span>
-                {% endif %}
-            </p>
-        </div>
-
-        {% if submission.content %}
-            <div style="margin-bottom: 1rem;">
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Submission Content</p>
-                <div style="background: var(--bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border);">
-                    <p style="color: var(--text); white-space: pre-wrap;">{{ submission.content }}</p>
-                </div>
-            </div>
-        {% endif %}
-
-        {% if submission.file %}
-            <div>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Attached File</p>
-                <div style="background: var(--bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
-                    <div>
-                        <p style="color: var(--text); font-weight: 500; margin-bottom: 0.25rem;">{{ submission.file_name }}</p>
-                        <p style="color: var(--text-muted); font-size: 0.85rem;">Uploaded file</p>
-                    </div>
-                    <a href="{{ submission.file.url }}" 
-                       download="{{ submission.file_name }}"
-                       style="background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-sm); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
-                        Download
-                    </a>
-                </div>
-            </div>
-        {% endif %}
-    </div>
-
-    <!-- Evaluation Form -->
-    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem;">
-        <h2 style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: var(--text);">Evaluation</h2>
-        
-        <form method="post">
-            {% csrf_token %}
-            
-            <div style="margin-bottom: 1.5rem;">
-                <label for="{{ form.marks.id_for_label }}" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text);">
-                    Marks
-                </label>
-                {{ form.marks }}
-                {% if form.marks.help_text %}
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">{{ form.marks.help_text }}</p>
-                {% endif %}
-                {% if form.marks.errors %}
-                    <p style="color: var(--danger); font-size: 0.85rem; margin-top: 0.25rem;">{{ form.marks.errors.0 }}</p>
-                {% endif %}
-            </div>
-
-            <div style="margin-bottom: 1.5rem;">
-                <label for="{{ form.feedback.id_for_label }}" style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text);">
-                    Feedback
-                </label>
-                {{ form.feedback }}
-                {% if form.feedback.errors %}
-                    <p style="color: var(--danger); font-size: 0.85rem; margin-top: 0.25rem;">{{ form.feedback.errors.0 }}</p>
-                {% endif %}
-            </div>
-
-            <div style="display: flex; gap: 1rem;">
-                <button type="submit" style="background: var(--primary); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; font-size: 1rem;">
-                    Save Evaluation
-                </button>
-                <a href="{% url 'submissions:assignment_submissions' assignment.id %}" style="display: inline-block; padding: 0.75rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius-sm); text-decoration: none; color: var(--text); font-weight: 500;">
-                    Cancel
-                </a>
-            </div>
-        </form>
-
-        {% if submission.reviewed_at %}
-            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
-                <p style="font-size: 0.85rem; color: var(--text-muted);">
-                    Last reviewed: {{ submission.reviewed_at|date:"d M Y, h:i A" }}
+                <p class="info-label">Name</p>
+                <p class="info-value">
+                    {{ submission.student.full_name }}
                 </p>
             </div>
+
+            <div>
+                <p class="info-label">Email</p>
+                <p class="info-value">
+                    {{ submission.student.email }}
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Submission Details -->
+
+    <div class="review-card">
+
+        <h2>Submission Details</h2>
+
+        <div class="submission-info">
+
+            <div>
+                <p class="info-label">Submitted At</p>
+                <p class="info-value">
+                    {{ submission.submitted_at|date:"d M Y, h:i A" }}
+                </p>
+            </div>
+
+            <div>
+                <p class="info-label">Status</p>
+
+                {% if submission.status == 'REVIEWED' %}
+                    <span class="status-badge status-reviewed">
+                        Reviewed
+                    </span>
+
+                {% elif submission.status == 'LATE' %}
+                    <span class="status-badge status-late">
+                        Late
+                    </span>
+
+                {% else %}
+                    <span class="status-badge status-submitted">
+                        Submitted
+                    </span>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        {% if submission.content %}
+
+            <div style="margin-bottom: 1.5rem;">
+
+                <p class="info-label">
+                    Submission Content
+                </p>
+
+                <div class="content-box">
+                    {{ submission.content }}
+                </div>
+
+            </div>
+
         {% endif %}
+
+
+        {% if submission.file %}
+
+            <div>
+
+                <p class="info-label">
+                    Attached File
+                </p>
+
+                <div class="file-box">
+
+                    <div>
+                        <p class="file-name">
+                            {{ submission.file_name }}
+                        </p>
+
+                        <p class="file-description">
+                            Uploaded file
+                        </p>
+                    </div>
+
+                    <a
+                        href="{{ submission.file.url }}"
+                        download="{{ submission.file_name }}"
+                        class="review-download"
+                    >
+                        Download
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Evaluation -->
+
+    <div class="review-card">
+
+        <h2>Evaluation</h2>
+
+        <form method="post" class="evaluation-form">
+
+            {% csrf_token %}
+
+
+            <div>
+
+                <label for="{{ form.marks.id_for_label }}">
+                    Marks
+                </label>
+
+                {{ form.marks }}
+
+                {% if form.marks.help_text %}
+                    <p class="field-help">
+                        {{ form.marks.help_text }}
+                    </p>
+                {% endif %}
+
+                {% if form.marks.errors %}
+                    <p class="field-error">
+                        {{ form.marks.errors.0 }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+
+            <div>
+
+                <label for="{{ form.feedback.id_for_label }}">
+                    Feedback
+                </label>
+
+                {{ form.feedback }}
+
+                {% if form.feedback.errors %}
+                    <p class="field-error">
+                        {{ form.feedback.errors.0 }}
+                    </p>
+                {% endif %}
+
+            </div>
+
+
+            <div class="review-actions">
+
+                <button
+                    type="submit"
+                    class="review-btn review-btn-primary"
+                >
+                    Save Evaluation
+                </button>
+
+                <a
+                    href="{% url 'submissions:assignment_submissions' assignment.id %}"
+                    class="review-btn review-btn-secondary"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+
+        {% if submission.reviewed_at %}
+
+            <div class="reviewed-note">
+                Last reviewed:
+                {{ submission.reviewed_at|date:"d M Y, h:i A" }}
+            </div>
+
+        {% endif %}
+
     </div>
 
 </div>
 
-<style>
-    input[type="number"],
-    textarea {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        font-family: inherit;
-        font-size: 1rem;
-        color: var(--text);
-        background: var(--surface);
-    }
-
-    input[type="number"]:focus,
-    textarea:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.1);
-    }
-
-    textarea {
-        resize: vertical;
-        min-height: 150px;
-    }
-</style>
 {% endblock %}

@@ -2,62 +2,257 @@
 
 {% block title %}Submit Assignment — Submitly{% endblock %}
 
+{% block extra_css %}
+<style>
+    .submission-page {
+        max-width: 800px;
+    }
+
+    .submission-header {
+        margin-bottom: 2rem;
+    }
+
+    .submission-header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0 0 0.75rem;
+    }
+
+    .submission-info {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.8;
+    }
+
+    .submission-info strong {
+        color: var(--text);
+    }
+
+    .submission-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 2rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .submission-card h2 {
+        margin: 0 0 1.5rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .submission-field {
+        margin-bottom: 1.5rem;
+    }
+
+    .submission-field label {
+        display: block !important;
+        margin-bottom: 0.5rem;
+        color: var(--text);
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .submission-field textarea {
+        display: block;
+        width: 100% !important;
+        min-height: 180px;
+        box-sizing: border-box;
+        padding: 0.85rem;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        background: #ffffff;
+        color: var(--text);
+        font-size: 0.95rem;
+        resize: vertical;
+    }
+
+    .submission-field textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .submission-file {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        background: #ffffff;
+        color: var(--text);
+        font-size: 0.9rem;
+    }
+
+    .submission-help {
+        margin: 0.5rem 0 0;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    .submission-errors {
+        margin: 0.4rem 0 0;
+        padding: 0;
+        list-style: none;
+        color: var(--danger);
+        font-size: 0.85rem;
+    }
+
+    .submission-actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .submission-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.65rem 1.1rem;
+        border-radius: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.15s ease;
+    }
+
+    .submission-btn-primary {
+        background: var(--primary);
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .submission-btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+    }
+
+    .submission-btn-secondary {
+        background: #ffffff;
+        color: var(--text);
+        border: 1px solid var(--border);
+    }
+
+    .submission-btn-secondary:hover {
+        background: var(--surface-hover);
+        transform: translateY(-1px);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
 
-    <h1>Submit Assignment</h1>
+<div class="submission-page">
 
-    <p>
-        <strong>Assignment:</strong>
-        {{ assignment.title }}
-    </p>
+    <div class="submission-header">
 
-    <p>
-        <strong>Course:</strong>
-        {{ assignment.course.code }} - {{ assignment.course.name }}
-    </p>
+        <h1>Submit Assignment</h1>
 
-    <p>
-        <strong>Due:</strong>
-        {{ assignment.due_date|date:"d M Y, h:i A" }}
-    </p>
+        <div class="submission-info">
 
-    <hr>
+            <div>
+                <strong>Assignment:</strong>
+                {{ assignment.title }}
+            </div>
 
-    <h2>Your Work</h2>
+            <div>
+                <strong>Course:</strong>
+                {{ assignment.course.code }} - {{ assignment.course.name }}
+            </div>
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+            <div>
+                <strong>Due:</strong>
+                {{ assignment.due_date|date:"d M Y, h:i A" }}
+            </div>
 
-        {{ form.non_field_errors }}
-
-        <div>
-            {{ form.content.label_tag }}
-            {{ form.content }}
-
-            {% for error in form.content.errors %}
-                <p>{{ error }}</p>
-            {% endfor %}
         </div>
 
-        <div>
-            {{ form.file.label_tag }}
-            {{ form.file }}
-            <p><small>Allowed file types: PDF, DOC, DOCX, PPT, PPTX, TXT (Max 10MB)</small></p>
+    </div>
 
-            {% for error in form.file.errors %}
-                <p>{{ error }}</p>
-            {% endfor %}
-        </div>
 
-        <button type="submit">
-            Submit Assignment
-        </button>
+    <div class="submission-card">
 
-        <a href="{% url 'assignments:assignment_detail' assignment.id %}">
-            Cancel
-        </a>
-    </form>
+        <h2>Your Work</h2>
+
+        <form
+            method="post"
+            enctype="multipart/form-data"
+        >
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+
+
+            <div class="submission-field">
+
+                {{ form.content.label_tag }}
+
+                {{ form.content }}
+
+                {% for error in form.content.errors %}
+                    <p class="submission-errors">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+
+            </div>
+
+
+            <div class="submission-field">
+
+                {{ form.file.label_tag }}
+
+                <input
+                    type="file"
+                    name="{{ form.file.name }}"
+                    id="{{ form.file.id_for_label }}"
+                    class="submission-file"
+                >
+
+                <p class="submission-help">
+                    Allowed file types: PDF, DOC, DOCX, PPT, PPTX, TXT
+                    (Max 10MB)
+                </p>
+
+                {% for error in form.file.errors %}
+                    <p class="submission-errors">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+
+            </div>
+
+
+            <div class="submission-actions">
+
+                <button
+                    type="submit"
+                    class="submission-btn submission-btn-primary"
+                >
+                    Submit Assignment
+                </button>
+
+                <a
+                    href="{% url 'assignments:assignment_detail' assignment.id %}"
+                    class="submission-btn submission-btn-secondary"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
+
 {% endblock %}

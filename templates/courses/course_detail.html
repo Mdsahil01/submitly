@@ -1,5 +1,39 @@
 {% extends "base.html" %}
+{% block extra_css %}
+<style>
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.6rem 1rem;
+        border-radius: var(--radius-sm);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: background 0.15s ease, transform 0.15s ease;
+    }
 
+    .action-btn-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .action-btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+    }
+
+    .action-btn-secondary {
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+    }
+
+    .action-btn-secondary:hover {
+        background: var(--surface-hover);
+    }
+</style>
+{% endblock %}
 {% block title %}{{ course.name }} - Submitly{% endblock %}
 
 {% block content %}
@@ -116,11 +150,14 @@
     {% endif %}
 
 
-    <p style="margin-top: 1.5rem;">
-        <a href="{% url 'assignments:create_assignment' course.id %}">
-            Create Assignment
-        </a>
-    </p>
+    <div style="margin-top: 1.5rem;">
+    <a
+        href="{% url 'assignments:create_assignment' course.id %}"
+        class="action-btn action-btn-primary"
+    >
+        + Create Assignment
+    </a>
+</div>
 
 {% endif %}
 
@@ -173,10 +210,13 @@
 {% endif %}
 
 
-<p style="margin-top: 1.5rem;">
-    <a href="{% url 'courses:course_list' %}">
+<div style="margin-top: 1.5rem;">
+    <a
+        href="{% url 'courses:course_list' %}"
+        class="action-btn action-btn-secondary"
+    >
         ← Back to Courses
     </a>
-</p>
+</div>
 
 {% endblock %}
