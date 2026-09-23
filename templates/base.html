@@ -1,4 +1,5 @@
-  <!DOCTYPE html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -127,6 +128,11 @@
             border-bottom: 1px solid var(--border);
 
             text-decoration: none;
+        }
+        .submitly-logo {
+            width: 150px;
+            height: auto;
+            display: block;
         }
 
         .brand-mark {
@@ -542,6 +548,12 @@
             .page-content {
                 padding: 24px;
             }
+            .submitly-logo {
+              width: 38px;
+              height: 38px;
+              object-fit: cover;
+              object-position: left;
+            }
         }
 
 
@@ -589,10 +601,13 @@
 
         <aside class="sidebar">
 
-            <a href="{% url 'root' %}" class="sidebar-brand">
-                <span class="brand-mark">S</span>
-                <span class="brand-name">Submitly</span>
-            </a>
+           <a href="{% url 'root' %}" class="sidebar-brand">
+    <img
+        src="{% static 'images/submitly-logo.png' %}"
+        alt="Submitly"
+        class="submitly-logo"
+    >
+</a>
 
             <div class="sidebar-content">
 
