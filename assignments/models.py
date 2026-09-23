@@ -6,6 +6,12 @@ from django.db import models
 class Assignment(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
+
+    reference_file = models.FileField(
+     upload_to="assignment_references/",
+     blank=True,
+     null=True,
+    )
     course = models.ForeignKey(
         "courses.Course",
         on_delete=models.CASCADE,

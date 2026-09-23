@@ -21,9 +21,9 @@ def create_assignment(request, course_id):
     )
 
     if request.method == "POST":
-        form = AssignmentForm(request.POST)
+       form = AssignmentForm(request.POST, request.FILES)
 
-        if form.is_valid():
+       if form.is_valid():
             assignment = form.save(commit=False)
             assignment.course = course
             assignment.created_by = request.user

@@ -23,6 +23,22 @@
 
     <p>{{ assignment.description }}</p>
 
+     {% if assignment.reference_file %}
+    <hr>
+
+    <h2>Reference Material</h2>
+
+    <p>
+        <strong>File:</strong>
+        {{ assignment.reference_file.name|cut:"assignment_references/" }}
+    </p>
+
+    <p>
+        <a href="{{ assignment.reference_file.url }}" download>
+            Download Reference File
+        </a>
+    </p>
+{% endif %}
     {% if submission %}
         <hr>
 
